@@ -7,17 +7,24 @@ ADMIN_GROUP_ID = -1003918137281
 
 logging.basicConfig(level=logging.INFO)
 
+new_users = set()
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-   await update.message.reply_text("أهلاً بالقارئ الكريم!\n\nأرسل لنا اقتراحاتك وتعليقاتك.")
+    new_users.add(update.effective_user.id)
+    await update.message.reply_text("أهلاً بالقارئ الكريم!")
 
 async def forward_to_admin(update: Update, context: ContextTypes.DEFAULT_TYPE):
-   user = update.effective_user
-   message = update.message.text
-   
-   text = f"📩 رسالة جديدة من @{user.username or user.first_name}:\n\n{message}"
-   
-   await context.bot.send_message(chat_id=ADMIN_GROUP_ID, text=text)
-   await update.message.reply_text("تم إرسال رسالتك، شكراً! ✅")
+    user = update.effective_user
+    message = update.message.text
+
+    text = f"📩 رسالة جديدة من @{user.username or user.first_name}:\n\n{message}"
+    await context.bot.send_message(chat_id=ADMIN_GROUP_ID, text=text)
+
+    if user.id not in new_users:
+        new_users.add(user.id)
+        await update.message.reply_text("أهلاً بالقارئ الكريم! تم إرسال رسالتك، شكراً! ✅")
+    else:
+        await update.message.reply_text("تم إرسال رسالتك، شكراً! ✅")
 
 app = ApplicationBuilder().token(TOKEN).build()
 app.add_handler(CommandHandler("start", start))
