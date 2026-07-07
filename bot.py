@@ -2,7 +2,8 @@ import logging
 from telegram import Update
 from telegram.ext import ApplicationBuilder, MessageHandler, CommandHandler, filters, ContextTypes
 
-TOKEN = "7677853690:AAEojBCXKBPuC9ZolL42X9XDiU4CJbh84XM"
+import os
+TOKEN = os.environ.get("BOT_TOKEN")
 ADMIN_GROUP_ID = -1003918137281
 
 logging.basicConfig(level=logging.INFO)
